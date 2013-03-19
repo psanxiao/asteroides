@@ -24,6 +24,7 @@
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="lanzarPreferencias"
         android:text="@string/configurar" />
 
     <Button
@@ -37,7 +38,7 @@
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="exit"
-        android:text="@string/salir" />
+        android:onClick="lanzarPuntuaciones"
+        android:text="@string/puntuaciones" />
 
 </LinearLayout>
