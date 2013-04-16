@@ -18,18 +18,34 @@ public class Juego extends Activity {
 	}
 	
 	@Override protected void onPause() {
-		   super.onPause();
-		   vistaJuego.getThread().pausar();
+		super.onPause();
+		vistaJuego.getThread().pausar();
+	}
+
+	@Override protected void onResume() {
+		super.onResume();
+		vistaJuego.getThread().reanudar();
+	}
+
+	@Override protected void onDestroy() {
+		vistaJuego.getThread().detener();
+		super.onDestroy();
+		mp.pause();
+	}
+	
+	protected void onSaveInstanceState(Bundle estadoGuardado) {
+		super.onSaveInstanceState(estadoGuardado);
+		if (mp != null) {
+			int pos = mp.getCurrentPosition();
+			estadoGuardado.putInt("posicion", pos);
 		}
-		 
-		@Override protected void onResume() {
-		   super.onResume();
-		   vistaJuego.getThread().reanudar();
+	}
+	
+	protected void onRestoreInstanceState(Bundle estadoGuardado) {
+		super.onRestoreInstanceState(estadoGuardado);
+		if (estadoGuardado != null && mp != null) {
+			int pos = estadoGuardado.getInt("posicion");
+			mp.seekTo(pos);
 		}
-		 
-		@Override protected void onDestroy() {
-		   vistaJuego.getThread().detener();
-		   super.onDestroy();
-		   mp.pause();
-		}
+	}
 }
