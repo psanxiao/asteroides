@@ -1,15 +1,20 @@
 package com.example.asteroides;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 public class Juego extends Activity {
 	private VistaJuego vistaJuego;
+	private MediaPlayer mp;
 	
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.juego);
 		vistaJuego = (VistaJuego) findViewById(R.id.VistaJuego);
+		
+		mp = MediaPlayer.create(this, R.raw.audio);
+		mp.start();
 	}
 	
 	@Override protected void onPause() {
@@ -25,5 +30,6 @@ public class Juego extends Activity {
 		@Override protected void onDestroy() {
 		   vistaJuego.getThread().detener();
 		   super.onDestroy();
+		   mp.pause();
 		}
 }
