@@ -3,7 +3,9 @@ package com.example.asteroides;
 import java.util.List;
 import java.util.Vector;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
@@ -14,12 +16,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class VistaJuego extends View implements SensorEventListener {
-
+	private int puntuacion = 0;
+	private Activity padre;
+	
 	private Vector<Grafico> Asteroides; // Vector con los Asteroides
 	private int numAsteroides= 5; // Número inicial de asteroides
 	private int numFragmentos= 3; // Fragmentos en que se divide
@@ -144,17 +149,23 @@ public class VistaJuego extends View implements SensorEventListener {
 		
 		// Actualizamos posición de misil
 		if (misilActivo) {
-		       misil.incrementaPos(retardo);
-		       tiempoMisil-=retardo;
-		       if (tiempoMisil < 0) {
-		             misilActivo = false;
-		       } else {
-		for (int i = 0; i < Asteroides.size(); i++)
-		             if (misil.verificaColision(Asteroides.elementAt(i))) {
-		                    destruyeAsteroide(i);
-		                    break;
-		             }
-		       }
+			misil.incrementaPos(retardo);
+			tiempoMisil-=retardo;
+			if (tiempoMisil < 0) {
+				misilActivo = false;
+			} else {
+				for (int i = 0; i < Asteroides.size(); i++)
+					if (misil.verificaColision(Asteroides.elementAt(i))) {
+						destruyeAsteroide(i);
+						break;
+					}
+			}
+		}
+		
+		for (Grafico asteroide : Asteroides) {
+		    if (asteroide.verificaColision(nave)) {
+		       salir();
+		    }
 		}
 	}
 	
@@ -241,7 +252,11 @@ public class VistaJuego extends View implements SensorEventListener {
 	
 	private void destruyeAsteroide(int i) {
 		Asteroides.remove(i);
+		puntuacion += 1000;
 		misilActivo = false;
+		if (Asteroides.isEmpty()) {
+            salir();
+		}
 	}
 
 	private void ActivaMisil() {
@@ -261,5 +276,16 @@ public class VistaJuego extends View implements SensorEventListener {
 		return thread;
 	}
 	
+	public void setPadre(Activity padre) {
+	      this.padre = padre;
+	}
 	
+	private void salir() {
+	    Bundle bundle = new Bundle();
+	    bundle.putInt("puntuacion", puntuacion);
+	    Intent intent = new Intent();
+	    intent.putExtras(bundle);
+	    padre.setResult(Activity.RESULT_OK, intent);
+	    padre.finish();
+	}
 }

@@ -15,6 +15,8 @@ public class Juego extends Activity {
 		
 		mp = MediaPlayer.create(this, R.raw.audio);
 		mp.start();
+		
+		vistaJuego.setPadre(this);
 	}
 	
 	@Override protected void onPause() {

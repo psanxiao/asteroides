@@ -10,12 +10,13 @@ import android.view.View;
 
 public class Asteroides extends Activity {
 	
-	public static AlmacenPuntuacionesArray almacen = new AlmacenPuntuacionesArray();
+	public static AlmacenPuntuacionesPreferencias almacen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        almacen = new AlmacenPuntuacionesPreferencias(this);
     }
 
     @Override
@@ -56,7 +57,19 @@ public class Asteroides extends Activity {
 	
 	public void lanzarJuego(View view) {
 		Intent i = new Intent(this, Juego.class);
-		startActivity(i);
+		startActivityForResult(i, 1234);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode==1234 & resultCode==RESULT_OK & data!=null) {
+			int puntuacion = data.getExtras().getInt("puntuacion");
+			String nombre = "Yo";
+			// Mejor leerlo desde un Dialog o una nueva actividad                       //AlertDialog.Builder
+			almacen.guardarPuntuacion(puntuacion, nombre,
+					System.currentTimeMillis());
+			lanzarPuntuaciones(null);
+		}
 	}
 	
 	public void exit(View view) {
